@@ -1,14 +1,11 @@
 # #Modular python server/client framework for Night Owl##
 # #IMPORTS
-import requests
 import json
-import sys
-import subprocess
-import numpy
-import flask
+import server
+
 # #Classes
 
-json_template={
+json_job_template={
   "job": {
     "id": {},
     "created": {},
@@ -25,57 +22,38 @@ json_template={
   }
 }
 
+json_watchman_config = {
+  "watchman": {
+    "server": {
+      "addr": "127.0.0.1",
+      "port": "5000",
+      "pollinterval": "5",
+      "authkey": "STATIC_KEY"
+    },
+    "modules": {
+      "steno": "true",
+      "pulledpork": "true",
+      "splunk": "true"
+    }
+  }
+}
 
-class JobPost:
-    status = "open"
-    module = "none"
-    checked_out = False
-    time_posted = ""
-    time_completed = ""
-    bpf = ""
-    newrules = ""
-    completedby = ""
+json_jobboard_config = {
+  "job_board": {
+    "api": {
+      "addr": "127.0.0.1",
+      "port": "5000",
+      "loglevel": "error",
+      "logfile": "/opt/nightwatch/log/api.log"
+    },
+    "authkey": "STATIC_KEY"
+  }
+}
+
 
 # ##Command and control functions###
 
 apikey = "TEST"
-
-def get_job():
-    # Exists to query the job board for stuff to do
-    job= ""
-    return job
-
-
-def run_job():  # Queueing service to run jobs
-    return()
-
-
-def push_results():  # Returns job results to the job board
-    return()
-
-
-def job_board():  # Handles holding all the jobs for the watchmen to run##
-
-    job_array = numpy.array('{"id": 1,"first_name": "Jeanette","last_name": "Penddreth","email": "jpenddreth0@census.gov","gender": "Female","ip_address": "26.58.193.2"}}')
-
-    board = flask.Flask(__name__)
-    board.config["DEBUG"] = True
-
-    @board.route('/', methods=['GET'])
-    def home():
-        text = "<p> Nightwatch is patrolling </p>"
-        return text
-
-    @board.route('/jobs', methods=['GET'])
-    def jobs():
-        if flask.request.headers['API-Key'] == apikey:
-            for jjob in job_array:
-
-
-            return str(job_array)
-        else:
-            return "Not Authenticated"
-    board.run()
 
 
 def get_role():  # Tells if host is a job board or watchman
@@ -84,23 +62,7 @@ def get_role():  # Tells if host is a job board or watchman
         config = json.load(file)
     return config
 
+
 def check_in():
     print("Place Holder")
 
-# ##Job Actions
-def choosemodule(job_data):
-    if job_data.module == "steno":
-        stenoquery()
-    return
-
-def runpulledpork():  # Reruns pulledpork, adding any new rules.
-    return()
-
-
-def stenoquery():  # Queries stenographer, returning results in html/json
-    subprocess.run("/opt/pulledpork/pulledpork.sh")
-    return()
-
-
-while True:
-    job_board()
